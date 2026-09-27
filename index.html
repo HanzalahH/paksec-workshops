@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0, user-scalable=yes">
+  <title>USB Attack Concepts Workshop (Educational &amp; Defensive) – PakSec Nation</title>
+  <meta name="description" content="2-Hour Live Educational Workshop: Understand how USB-based attacks work and how to defend against them. Ethical, legal, defensive training only. 4 October • 10:00 PM – 12:00 AM. Only RS 999. Limited seats.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg:#0B0F19;--color-primary:#00F260;--color-secondary:#004B23;
+      --color-text-main:#FFFFFF;--color-text-muted:#828F9C;
+      --color-surface:rgba(255,255,255,0.03);--color-surface-hover:rgba(255,255,255,0.07);
+      --color-border:rgba(255,255,255,0.10);--color-border-green:rgba(0,242,96,0.20);
+      --font-heading:'Space Grotesk',sans-serif;--font-body:'Inter',sans-serif;
+      --shadow-glow:0 0 24px rgba(0,242,96,0.25);--shadow-glow-lg:0 0 50px rgba(0,242,96,0.15);
+      --radius-sm:8px;--radius-md:16px;--radius-lg:24px;--radius-pill:200px;
+      --transition:0.3s ease;--transition-slow:0.6s cubic-bezier(0.5,0,0,1);
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      background-color:var(--color-bg);
+      background-image:radial-gradient(circle at 50% 0%,rgba(0,242,96,0.04) 0%,transparent 60%),
+        linear-gradient(rgba(0,242,96,0.02) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(0,242,96,0.02) 1px,transparent 1px);
+      background-size:100% 100%,40px 40px,40px 40px;
+      color:var(--color-text-main);font-family:var(--font-body);
+      line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+    }
+    .scanline{
+      position:fixed;top:0;left:0;width:100%;height:4px;
+      background:rgba(0,242,96,0.06);box-shadow:0 0 18px rgba(0,242,96,0.2);
+      z-index:9999;pointer-events:none;animation:scan 12s linear infinite;
+    }
+    @keyframes scan{from{top:-1%}to{top:101%}}
+    body::after{
+      content:'';position:fixed;width:3px;height:3px;
+      background:var(--color-primary);border-radius:50%;bottom:-10px;left:20%;
+      box-shadow:0 0 6px rgba(0,242,96,0.4),80vw -10vh 0 0 rgba(0,242,96,0.2),
+        30vw -30vh 0 0 rgba(0,242,96,0.15),70vw -50vh 0 0 rgba(0,242,96,0.25),
+        15vw -60vh 0 0 rgba(0,242,96,0.1),85vw -80vh 0 0 rgba(0,242,96,0.2),
+        50vw -90vh 0 0 rgba(0,242,96,0.15);
+      animation:floatUp 15s linear infinite;pointer-events:none;z-index:0;
+    }
+    @keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(0)}10%{opacity:1}90%{opacity:1}100%{opacity:0;transform:translateY(-100vh) scale(1)}}
+    h1,h2,h3,h4,h5,h6{font-family:var(--font-heading);font-weight:700;line-height:1.15;color:var(--color-text-main)}
+    h1{font-size:clamp(2.4rem,5vw,4.5rem);text-transform:uppercase;letter-spacing:-1px}
+    h2{font-size:clamp(1.9rem,4vw,3rem)}
+    h3{font-size:clamp(1.3rem,3vw,1.9rem)}
+    p{color:var(--color-text-muted);font-size:1.05rem;line-height:1.7}
+    a{color:var(--color-primary);text-decoration:none;transition:color var(--transition)}
+    a:hover{color:#fff}
+    ul{list-style:none}
+    .container{max-width:1200px;margin:0 auto;padding:0 2rem;box-sizing:border-box}
+    .section{padding:7rem 0;position:relative;scroll-behavior:smooth}
+    .text-center{text-align:center;word-wrap:break-word}
+    
+    /* Better Mobile Spacing */
+    @media(max-width:768px){
+      .container{padding:0 1.25rem}
+      .section{padding:3.5rem 0}
+    }
+    @media(max-width:480px){
+      .container{padding:0 1rem}
+      .section{padding:2.5rem 0}
+    }
+
+    /* Buttons with Better Mobile Touch Target */
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      padding:0.85rem 2.2rem;font-family:var(--font-heading);font-size:1rem;font-weight:700;
+      text-transform:uppercase;letter-spacing:0.5px;border-radius:var(--radius-pill);
+      cursor:pointer;transition:all var(--transition);text-decoration:none;
+      border:2px solid transparent;position:relative;overflow:hidden;
+      min-height:48px;min-width:48px;
+    }
+    @media(max-width:768px){
+      .btn{padding:0.9rem 1.8rem;min-height:44px;font-size:0.95rem}
+    }
+    @media(max-width:480px){
+      .btn{padding:0.85rem 1.5rem;min-height:44px;font-size:0.9rem}
+    }
+    .btn::after{content:'';position:absolute;top:50%;left:50%;width:0;height:0;
+      background:rgba(255,255,255,0.15);border-radius:50%;transform:translate(-50%,-50%);
+      transition:width 0.5s ease,height 0.5s ease;}
+    .btn:active::after{width:300px;height:300px}
+    .btn-primary{background:var(--color-primary);color:#000;box-shadow:var(--shadow-glow)}
+    .btn-primary:hover{background:#00d655;color:#000;box-shadow:0 0 40px rgba(0,242,96,0.5);transform:translateY(-2px)}
+    .btn-outline{background:transparent;color:var(--color-primary);border-color:var(--color-primary)}
+    .btn-outline:hover{background:rgba(0,242,96,0.08);color:var(--color-primary);box-shadow:var(--shadow-glow)}
+    .btn-lg{padding:1rem 2.8rem;font-size:1.15rem}
+
+    /* Glass Card with Mobile Support */
+    .glass-card{
+      background:var(--color-surface);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+      border:1px solid var(--color-border);border-radius:var(--radius-md);
+      transition:transform var(--transition),border-color var(--transition),box-shadow var(--transition);
+      will-change:transform;
+    }
+    @media(hover:hover){
+      .glass-card:hover{transform:translateY(-6px);border-color:var(--color-border-green);box-shadow:0 20px 50px rgba(0,242,96,0.12)}
+    }
+    @media(max-width:768px){
+      .glass-card{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,242,96,0.08)}
+    }
+
+    /* Pill Badge */
+    .pill-badge{
+      display:inline-flex;align-items:center;gap:8px;padding:6px 18px;
+      background:rgba(0,242,96,0.08);border:1px solid rgba(0,242,96,0.3);
+      border-radius:var(--radius-pill);color:var(--color-primary);
+      font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;
+    }
+    .pill-dot{width:7px;height:7px;border-radius:50%;background:var(--color-primary);animation:pulse-dot 2s ease-in-out infinite}
+    @keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 rgba(0,242,96,0.5)}50%{box-shadow:0 0 0 6px rgba(0,242,96,0)}}
+    
+    /* Animated Seats Counter */
+    @keyframes subtlePulse{0%{opacity:1;text-shadow:0 0 10px rgba(0,242,96,0.4)}50%{opacity:0.9;text-shadow:0 0 20px rgba(0,242,96,0.6)}100%{opacity:1;text-shadow:0 0 10px rgba(0,242,96,0.4)}}
+    .seats-counter{display:inline-block;font-family:var(--font-heading);font-size:2.2rem;font-weight:700;color:var(--color-primary);animation:subtlePulse 3s ease-in-out infinite;text-shadow:0 0 10px rgba(0,242,96,0.4)}
+    .seats-label{display:inline-block;margin-left:0.5rem;}
+
+    /* Section Label */
+    .section-label{
+      display:inline-block;padding:5px 16px;
+      background:rgba(0,242,96,0.06);border:1px solid rgba(0,242,96,0.25);
+      border-radius:var(--radius-pill);color:var(--color-primary);
+      font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:2.5px;margin-bottom:1.2rem;
+    }
+
+    /* Scroll Reveal with Improved Mobile Support */
+    .reveal{opacity:0;transform:translateY(30px);transition:opacity 0.6s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);will-change:opacity,transform}
+    .reveal.active{opacity:1;transform:translateY(0)}
+    .reveal-left{opacity:0;transform:translateX(-40px);transition:opacity 0.6s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);will-change:opacity,transform}
+    .reveal-left.active{opacity:1;transform:translateX(0)}
+    .reveal-right{opacity:0;transform:translateX(40px);transition:opacity 0.6s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);will-change:opacity,transform}
+    .reveal-right.active{opacity:1;transform:translateX(0)}
+    .delay-1{transition-delay:80ms}.delay-2{transition-delay:160ms}
+    .delay-3{transition-delay:240ms}.delay-4{transition-delay:320ms}.delay-5{transition-delay:400ms}
+    
+    /* Scale Animation on Reveal */
+    @keyframes scaleIn{0%{opacity:0;transform:scale(0.95) translateY(20px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+    .reveal.scale{animation:scaleIn 0.6s cubic-bezier(0.25,0.46,0.45,0.94) forwards}
+    
+    /* Smooth Hover Effects — PakSec Nation style */
+    @media(hover:hover){
+      .glass-card:hover{
+        transform:translateY(-8px);
+        border-color:var(--color-border-green);
+        box-shadow:0 25px 50px rgba(0,242,96,0.12),0 0 40px rgba(0,242,96,0.06);
+        transition:all 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+      }
+      .btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,242,96,0.3);transition:all 0.3s ease}
+      .step-card:hover,.ethics-card:hover,.learn-item:hover,.workshop-benefit-card:hover{
+        transform:translateY(-8px);
+        border-color:rgba(0,242,96,0.45);
+        box-shadow:0 25px 50px rgba(0,242,96,0.12),0 0 40px rgba(0,242,96,0.06);
+      }
+    }
+
+    /* Animated top accent bar (PakSec Nation style) */
+    .card-accent{
+      position:absolute;top:0;left:0;right:0;height:3px;
+      background:linear-gradient(90deg,transparent,var(--color-primary),transparent);
+      transform:scaleX(0.3);opacity:0.4;
+      animation:accentSlide 3s ease-in-out infinite;
+      pointer-events:none;
+    }
+    .card-accent-delay{animation-delay:1.5s}
+    @keyframes accentSlide{
+      0%,100%{transform:scaleX(0.3);opacity:0.3}
+      50%{transform:scaleX(1);opacity:1}
+    }
+
+    /* Workshop benefits grid (was missing — fixed mobile layout) */
+    .workshop-benefits-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:1.5rem;
+    }
+    .workshop-benefit-card{
+      position:relative;
+      padding:2rem 1.75rem;
+      background:var(--color-surface);
+      border:1px solid var(--color-border);
+      border-radius:var(--radius-md);
+      overflow:hidden;
+      transition:all 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+    }
+    .workshop-benefit-card h3{font-size:1.15rem}
+    .workshop-benefit-card ul li span:last-child{color:var(--color-text-muted);font-size:0.95rem;line-height:1.5}
+
+    /* Quick-enroll / early section mobile polish */
+    .quick-enroll-section{padding:2.5rem 0 1.5rem}
+    .quick-enroll-card{margin:0 auto;max-width:600px;padding:2.5rem 2rem}
+    
+    /* Mobile Touch Friendly */
+    @media(max-width:768px){
+      .reveal,.reveal-left,.reveal-right{transition:opacity 0.4s ease,transform 0.4s ease}
+      .delay-1{transition-delay:0ms}.delay-2{transition-delay:50ms}
+      .delay-3{transition-delay:100ms}.delay-4{transition-delay:150ms}.delay-5{transition-delay:200ms}
+      .workshop-benefits-grid{grid-template-columns:1fr;gap:1.25rem}
+      .workshop-benefit-card{padding:1.5rem 1.25rem}
+      .quick-enroll-section{padding:2rem 0 1rem}
+      .quick-enroll-card{padding:1.75rem 1.25rem;border-radius:16px}
+      .quick-enroll-card h3{font-size:1.35rem;line-height:1.3}
+      .quick-enroll-card p{font-size:0.95rem;margin-bottom:1.25rem !important}
+    }
+    @media(max-width:480px){
+      .workshop-benefit-card{padding:1.25rem 1rem}
+      .workshop-benefit-card h3{font-size:1.05rem;margin-bottom:1rem !important}
+      .workshop-benefit-card ul li{margin-bottom:0.75rem !important;font-size:0.9rem}
+      .quick-enroll-card{padding:1.5rem 1rem}
+      .quick-enroll-card h3{font-size:1.2rem}
+      .workshop-objective-box{padding:1.5rem 1rem !important;border-radius:16px !important}
+      .workshop-objective-lead{font-size:0.95rem !important;line-height:1.55 !important;margin-bottom:1.25rem !important}
+    }
+    @media(max-width:768px){
+      .workshop-objective-box{padding:1.75rem 1.25rem !important;border-radius:18px !important}
+      .workshop-objective-lead{font-size:1rem !important;line-height:1.6 !important}
+      .technique-box{padding:1.75rem 1.25rem !important;border-radius:18px !important}
+      .technique-lead{font-size:1rem !important;line-height:1.6 !important}
+      .learn-item{padding:1.15rem 1.2rem !important}
+      .pricing-card{padding:2rem 1.25rem !important}
+    }
+    @media(max-width:480px){
+      .technique-box{padding:1.5rem 1rem !important;border-radius:16px !important}
+      .technique-lead{font-size:0.95rem !important}
+    }
+
+    /* NAVBAR */
+    .navbar{
+      position:fixed;top:0;left:0;width:100%;padding:1rem 0;z-index:1000;
+      background:rgba(11,15,25,0.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--color-border);transition:all var(--transition);
+    }
+    .navbar .container{display:flex;justify-content:space-between;align-items:center}
+    .nav-brand{
+      font-family:var(--font-heading);font-size:1.5rem;font-weight:700;
+      color:var(--color-text-main);display:flex;align-items:center;gap:10px;letter-spacing:-0.5px;
+    }
+    .nav-brand .brand-icon{
+      width:38px;height:38px;border-radius:10px;
+      background:linear-gradient(135deg,var(--color-primary),var(--color-secondary));
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.1rem;color:#000;font-weight:900;
+    }
+    .nav-logo{
+      width:42px;height:42px;object-fit:contain;border-radius:8px;
+      flex-shrink:0;
+    }
+    @media(max-width:480px){.nav-logo{width:36px;height:36px}}
+    .nav-brand span{color:var(--color-primary)}
+    .nav-links{display:flex;gap:2rem;align-items:center}
+    .nav-links a{color:var(--color-text-muted);font-weight:500;font-size:0.95rem;transition:color var(--transition)}
+    .nav-links a:hover{color:var(--color-primary)}
+    .mobile-menu-btn{
+      display:none;background:none;border:2px solid var(--color-border);
+      color:var(--color-text-main);font-size:1.4rem;cursor:pointer;
+      border-radius:6px;width:42px;height:42px;align-items:center;justify-content:center;
+      line-height:1;transition:all var(--transition);
+    }
+    .mobile-menu-btn:hover{border-color:var(--color-primary);color:var(--color-primary)}
+
+    /* HERO */
+    .hero{
+      position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;
+      text-align:center;padding:9rem 1.5rem 5rem;
+      background:radial-gradient(circle at center,#0e1a2e 0%,var(--color-bg) 70%);overflow:hidden;
+    }
+    .hero::before{
+      content:'';position:absolute;inset:0;
+      background-image:linear-gradient(rgba(0,242,96,0.05) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(0,242,96,0.05) 1px,transparent 1px);
+      background-size:40px 40px;background-position:center center;z-index:1;
+      mask-image:radial-gradient(circle at center,black 0%,transparent 80%);
+      -webkit-mask-image:radial-gradient(circle at center,black 0%,transparent 80%);
+      animation:gridMove 20s linear infinite;
+    }
+    @keyframes gridMove{0%{transform:translateY(0)}100%{transform:translateY(40px)}}
+    .hero-glow{
+      position:absolute;width:600px;height:600px;border-radius:50%;
+      background:radial-gradient(circle,rgba(0,242,96,0.06) 0%,transparent 70%);
+      top:50%;left:50%;transform:translate(-50%,-50%);z-index:1;pointer-events:none;
+    }
+    .hero-content{position:relative;z-index:2;max-width:860px}
+    .hero h1{margin:1.2rem 0 1.5rem;text-shadow:0 0 40px rgba(0,242,96,0.2);animation:fadeInDown 0.9s ease-out}
+    .hero h1 .hl{color:var(--color-primary)}
+    .hero-defend{
+      font-family:var(--font-heading);font-size:clamp(0.95rem,2.5vw,1.25rem);font-weight:500;
+      color:var(--color-text-muted);margin:0.4rem 0 1.25rem;letter-spacing:0.5px;
+      animation:fadeInUp 0.9s ease-out 0.15s both;
+    }
+    .hero-sub{font-size:1.05rem;color:var(--color-text-muted);max-width:620px;margin:0 auto 1.75rem;animation:fadeInUp 0.9s ease-out 0.2s both;word-wrap:break-word;overflow-wrap:break-word;line-height:1.55}
+    @media(max-width:768px){
+      .hero-sub{font-size:1rem;line-height:1.6}
+    }
+    @media(max-width:480px){
+      .hero-sub{font-size:0.95rem;line-height:1.5}
+    }
+    .hero-meta{display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap;margin-bottom:2rem;animation:fadeInUp 0.9s ease-out 0.35s both}
+    .hero-meta-item{display:flex;align-items:center;gap:8px;color:var(--color-text-muted);font-size:0.95rem;font-weight:500}
+    .hero-meta-item svg{color:var(--color-primary);flex-shrink:0}
+    .hero-meta-item strong{color:#fff}
+    .hero-urgency{
+      display:inline-flex;align-items:center;gap:8px;padding:8px 20px;
+      background:rgba(255,50,50,0.08);border:1px solid rgba(255,80,80,0.3);
+      border-radius:var(--radius-pill);color:#ff6b6b;font-size:0.88rem;font-weight:700;
+      text-transform:uppercase;letter-spacing:1.5px;margin-bottom:2rem;
+      animation:fadeInUp 0.9s ease-out 0.45s both;
+    }
+    .urgency-dot{width:7px;height:7px;border-radius:50%;background:#ff6b6b;animation:urgency-pulse 1.5s ease-in-out infinite}
+    @keyframes urgency-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,107,0.5)}50%{box-shadow:0 0 0 6px rgba(255,107,107,0)}}
+    .hero-cta{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fadeInUp 0.9s ease-out 0.55s both}
+    @keyframes fadeInDown{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+    /* STEPS */
+    .steps-section{background:rgba(0,242,96,0.015)}
+    .steps-heading{font-size:clamp(1.8rem,4vw,2.8rem);text-transform:uppercase;letter-spacing:-0.5px;margin-bottom:0.8rem}
+    .steps-heading .hl{color:var(--color-primary)}
+    .steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin:3rem 0}
+    .step-card{
+      padding:2.5rem 2rem;background:rgba(255,255,255,0.02);
+      border:1px solid var(--color-border);border-radius:var(--radius-lg);
+      text-align:center;position:relative;overflow:hidden;
+      transition:all 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+    }
+    .step-card::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:3px;
+      background:linear-gradient(90deg,transparent,var(--color-primary),transparent);
+      transform:scaleX(0.3);opacity:0.35;
+      animation:accentSlide 3s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @media(hover:hover){
+      .step-card:hover{transform:translateY(-10px);border-color:var(--color-border-green);box-shadow:0 25px 50px rgba(0,242,96,0.12),0 0 40px rgba(0,242,96,0.06)}
+      .step-card:hover::before{transform:scaleX(1);opacity:1;animation:none}
+    }
+    @media(max-width:768px){
+      .step-card{padding:1.75rem 1.25rem}
+      .step-card::before{transform:scaleX(0.6);opacity:0.6}
+    }
+    .step-number{font-family:var(--font-heading);font-size:4rem;font-weight:700;color:var(--color-primary);line-height:1;margin-bottom:1rem;text-shadow:0 0 30px rgba(0,242,96,0.3)}
+    .step-card h3{color:#fff;margin-bottom:0.75rem;font-size:1.2rem}
+    .step-card p{font-size:0.95rem;margin:0}
+    .step-icon{
+      width:56px;height:56px;border-radius:14px;background:rgba(0,242,96,0.08);
+      border:1px solid rgba(0,242,96,0.2);display:flex;align-items:center;justify-content:center;
+      margin:0 auto 1.2rem;transition:all var(--transition);
+    }
+    .step-card:hover .step-icon{background:var(--color-primary);box-shadow:0 0 25px rgba(0,242,96,0.4)}
+    .step-card:hover .step-icon svg{stroke:#000}
+    .steps-cta{margin-top:1rem;text-align:center}
+
+    /* LEARN */
+    .learn-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;margin-top:2.5rem}
+    .learn-item{
+      display:flex;align-items:flex-start;gap:1rem;padding:1.5rem 1.75rem;
+      background:var(--color-surface);border:1px solid var(--color-border);
+      border-radius:var(--radius-md);transition:all 0.45s cubic-bezier(0.175,0.885,0.32,1.275);will-change:transform,border-color;
+      position:relative;overflow:hidden;
+    }
+    @media(hover:hover){
+      .learn-item:hover{
+        border-color:rgba(0,242,96,0.4);
+        background:var(--color-surface-hover);
+        transform:translateY(-4px) translateX(4px);
+        box-shadow:0 16px 36px rgba(0,242,96,0.1);
+      }
+      .learn-item:hover .learn-icon{
+        background:var(--color-primary);
+        box-shadow:0 0 20px rgba(0,242,96,0.35);
+      }
+      .learn-item:hover .learn-icon svg{stroke:#000}
+    }
+    @media(max-width:768px){
+      .learn-item{padding:1.15rem 1.2rem}
+    }
+    .learn-icon{width:42px;height:42px;flex-shrink:0;border-radius:10px;background:rgba(0,242,96,0.08);border:1px solid rgba(0,242,96,0.2);display:flex;align-items:center;justify-content:center}
+    .learn-item h4{font-size:1rem;color:#fff;margin-bottom:0.3rem}
+    .learn-item p{font-size:0.88rem;margin:0}
+
+    /* AGENDA */
+    .agenda-section{background:rgba(0,0,0,0.2)}
+    .agenda-timeline{margin-top:2.5rem;position:relative}
+    .agenda-timeline::before{content:'';position:absolute;left:28px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--color-primary),rgba(0,242,96,0.1))}
+    .agenda-item{display:flex;gap:1.5rem;margin-bottom:1.5rem;padding:1.25rem 1.5rem 1.25rem 0;position:relative}
+    .agenda-dot{
+      width:56px;height:56px;flex-shrink:0;border-radius:50%;
+      background:rgba(0,242,96,0.08);border:2px solid rgba(0,242,96,0.3);
+      display:flex;align-items:center;justify-content:center;position:relative;z-index:1;transition:all var(--transition);
+    }
+    @media(hover:hover){
+      .agenda-item:hover .agenda-dot{background:var(--color-primary);box-shadow:0 0 20px rgba(0,242,96,0.4)}
+      .agenda-item:hover .agenda-dot svg{stroke:#000}
+    }
+    @media(max-width:768px){
+      .agenda-dot{background:var(--color-primary);box-shadow:0 0 15px rgba(0,242,96,0.3)}
+      .agenda-dot svg{stroke:#000}
+    }
+    .agenda-body{flex:1;padding:1.25rem 1.5rem;background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-md);transition:all var(--transition)}
+    .agenda-item:hover .agenda-body{border-color:var(--color-border-green)}
+    .agenda-time{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--color-primary);margin-bottom:0.3rem}
+    .agenda-body h4{color:#fff;font-size:1rem;margin-bottom:0.25rem}
+    .agenda-body p{font-size:0.88rem;margin:0}
+
+    /* PRICING */
+    .pricing-section{text-align:center}
+    .pricing-card{
+      max-width:520px;margin:2.5rem auto 0;padding:3rem 2.5rem;
+      background:rgba(0,242,96,0.03);border:1px solid rgba(0,242,96,0.25);
+      border-radius:var(--radius-lg);position:relative;overflow:hidden;
+    }
+    .pricing-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--color-primary),transparent)}
+    .pricing-glow{position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(0,242,96,0.08) 0%,transparent 70%);pointer-events:none}
+    .price-amount{font-family:var(--font-heading);font-size:clamp(3.5rem,8vw,5.5rem);font-weight:700;color:var(--color-primary);text-shadow:0 0 40px rgba(0,242,96,0.3);line-height:1}
+    .price-currency{font-size:0.45em;vertical-align:top;margin-top:0.6em}
+    .price-label{color:var(--color-text-muted);font-size:0.9rem;margin:0.5rem 0 1.5rem}
+    .pricing-details{margin:1.5rem 0 2rem}
+    .pricing-detail{display:flex;align-items:center;justify-content:center;gap:10px;color:var(--color-text-muted);font-size:0.95rem;margin-bottom:0.6rem}
+    .pricing-detail svg{color:var(--color-primary)}
+    .pricing-detail strong{color:#fff}
+    .pricing-urgency{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;background:rgba(255,80,80,0.08);border:1px solid rgba(255,80,80,0.25);border-radius:var(--radius-pill);color:#ff6b6b;font-size:0.85rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem}
+
+    /* ETHICS */
+    .ethics-section{background:rgba(0,0,0,0.25)}
+    .ethics-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;margin-top:2.5rem}
+    .ethics-card{padding:2rem;background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-md);transition:all 0.5s cubic-bezier(0.175,0.885,0.32,1.275);position:relative;overflow:hidden}
+    .ethics-card::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:3px;
+      background:linear-gradient(90deg,transparent,var(--color-primary),transparent);
+      transform:scaleX(0.3);opacity:0.35;animation:accentSlide 3.2s ease-in-out infinite;pointer-events:none;
+    }
+    @media(hover:hover){
+      .ethics-card:hover{border-color:var(--color-border-green);transform:translateY(-8px);box-shadow:0 20px 40px rgba(0,242,96,0.1)}
+      .ethics-card:hover::before{transform:scaleX(1);opacity:1;animation:none}
+    }
+    .ethics-card-header{display:flex;align-items:center;gap:12px;margin-bottom:1rem}
+    .ethics-icon{width:44px;height:44px;border-radius:10px;flex-shrink:0;background:rgba(0,242,96,0.08);border:1px solid rgba(0,242,96,0.2);display:flex;align-items:center;justify-content:center}
+    .ethics-card h4{color:#fff;font-size:1.05rem;margin:0}
+    .ethics-card p{font-size:0.9rem;margin:0}
+    .peca-banner{margin-top:2rem;padding:1.5rem 2rem;background:rgba(255,80,80,0.05);border:1px solid rgba(255,80,80,0.2);border-radius:var(--radius-md);display:flex;align-items:flex-start;gap:1rem}
+    .peca-icon{flex-shrink:0;margin-top:2px}
+    .peca-banner h4{color:#ff6b6b;font-size:1rem;margin-bottom:0.4rem}
+    .peca-banner p{font-size:0.88rem;margin:0;color:var(--color-text-muted)}
+
+    /* FINAL CTA */
+    .final-cta{text-align:center;background:radial-gradient(ellipse at center,rgba(0,242,96,0.05) 0%,transparent 70%)}
+    .final-cta-card{max-width:700px;margin:0 auto;padding:4rem 3rem;background:rgba(0,242,96,0.03);border:1px solid rgba(0,242,96,0.2);border-radius:var(--radius-lg);position:relative;overflow:hidden}
+    .final-cta-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--color-primary),transparent)}
+    .final-cta-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--color-primary),transparent)}
+    .final-cta h2{margin-bottom:0.5rem}
+    .final-cta .hl{color:var(--color-primary)}
+    .final-cta-meta{display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap;margin:1.5rem 0 2rem}
+    .final-cta-meta-item{display:flex;align-items:center;gap:8px;color:var(--color-text-muted);font-size:0.95rem}
+    .final-cta-meta-item svg{color:var(--color-primary)}
+    .final-cta-meta-item strong{color:#fff}
+
+    /* FOOTER */
+    .footer{background:#05080c;padding:4rem 0 2rem;border-top:1px solid var(--color-border)}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:2rem;margin-bottom:2rem}
+    .footer-brand-name{font-family:var(--font-heading);font-size:1.4rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:10px;margin-bottom:0.8rem}
+    .footer-brand-name .brand-icon{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--color-primary),var(--color-secondary));display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:#000;font-weight:900}
+    .footer-brand-name span{color:var(--color-primary)}
+    .footer-brand p{font-size:0.88rem;color:var(--color-text-muted);max-width:280px;margin:0}
+    .footer-col h4{font-size:1rem;color:#fff;margin-bottom:1rem;font-family:var(--font-heading)}
+    .footer-col ul li{margin-bottom:0.5rem}
+    .footer-col a{color:var(--color-text-muted);font-size:0.9rem;transition:color var(--transition)}
+    .footer-col a:hover{color:var(--color-primary)}
+    .footer-bottom{text-align:center;padding-top:1.5rem;border-top:1px solid var(--color-border);color:var(--color-text-muted);font-size:0.85rem}
+    .footer-bottom .legal{display:inline-flex;align-items:center;gap:8px;margin-top:0.5rem;padding:6px 16px;background:rgba(255,80,80,0.06);border:1px solid rgba(255,80,80,0.15);border-radius:var(--radius-pill);color:#ff6b6b;font-size:0.8rem;font-weight:600}
+
+    /* DIVIDER */
+    .section-divider{height:1px;background:linear-gradient(90deg,transparent,var(--color-border),transparent);margin:0}
+
+    /* RESPONSIVE */
+    @media(max-width:1024px){.steps-grid{grid-template-columns:repeat(3,1fr);gap:1rem}.learn-grid{grid-template-columns:1fr}.ethics-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:768px){
+      .section{padding:3rem 0}.steps-grid{grid-template-columns:1fr;gap:1rem}
+      .learn-grid{grid-template-columns:1fr}.ethics-grid{grid-template-columns:1fr}
+      .footer-grid{grid-template-columns:1fr}.hero-meta{gap:0.75rem;flex-wrap:wrap}
+      .hero-meta-item{font-size:0.85rem}.final-cta-card{padding:2rem 1.5rem}.final-cta-meta{gap:1rem;flex-direction:column}
+      .final-cta-meta-item{font-size:0.9rem}
+      .agenda-timeline::before{left:24px}.agenda-dot{width:48px;height:48px}
+      .pricing-card{padding:2rem 1.5rem}
+      .nav-links{
+        position:fixed;top:0;right:-100%;width:min(80%,320px);height:100vh;
+        background:#0d1120;flex-direction:column;justify-content:center;align-items:center;gap:2rem;
+        transition:right 0.35s cubic-bezier(0.4,0,0.2,1);border-left:1px solid var(--color-border);
+        z-index:999;padding:2rem 1.5rem;box-shadow:-10px 0 40px rgba(0,0,0,0.5);overflow-y:auto;
+      }
+      .nav-links.active{right:0}
+      .nav-links a{font-size:1.1rem;padding:0.5rem 0;width:100%;text-align:center}
+      .mobile-menu-btn{display:flex;z-index:1001}
+      .nav-links.active::before{content:'';position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);z-index:-1;backdrop-filter:blur(2px)}
+      .btn{width:100%;max-width:100%}.hero-cta{flex-direction:column;align-items:center;gap:1rem}
+      .scanline{display:none}body::after{display:none}
+      h1{font-size:2rem;line-height:1.2}h2{font-size:1.5rem}
+      .hero{padding:6rem 1rem 3rem}.hero-sub{font-size:0.95rem}
+      .pill-badge{font-size:0.7rem;padding:4px 12px}
+    }
+    @media(max-width:480px){
+      .container{padding:0 1rem}.hero{padding:5rem 1rem 2rem}
+      .pricing-card{padding:1.5rem 1rem}
+      h1{font-size:1.6rem}h2{font-size:1.25rem}h3{font-size:1rem}
+      .section{padding:2rem 0}
+      .steps-heading{font-size:1.3rem}
+      .final-cta-card{padding:1.5rem 1rem}
+      .learn-item{padding:1rem}
+      .step-card{padding:1.5rem 1rem}
+      p{font-size:0.95rem}
+      .btn-lg{padding:0.8rem 1.5rem;font-size:0.9rem}
+      .hero-meta-item{flex-direction:column;gap:0.25rem;font-size:0.75rem}
+      .nav-links{width:85vw}
+      .price-amount{font-size:2rem}
+      .seats-counter{font-size:1.8rem}
+    }
+  </style>
+</head>
+<body>
+  <div class="scanline"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="https://paksec-nation.netlify.app" class="nav-brand" target="_blank" rel="noopener" title="PakSec Nation">
+        <img src="assets/paksec-logo.png" alt="PakSec Nation" class="nav-logo">
+        PakSec <span>Nation</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#steps" onclick="closeMenu()">How to Enroll</a></li>
+        <li><a href="#learn" onclick="closeMenu()">What You'll Learn</a></li>
+        <li><a href="#agenda" onclick="closeMenu()">Agenda</a></li>
+        <li><a href="#pricing" onclick="closeMenu()">Pricing</a></li>
+        <li><a href="#ethics" onclick="closeMenu()">Ethics</a></li>
+        <li><a href="https://paksec-nation.netlify.app" target="_blank" rel="noopener" onclick="closeMenu()">Main Site</a></li>
+        <li>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSdxtgT2HtzBhfTMUpeWtsB5SnzDbYyNNQXvN2RPvNyyVc57dg/viewform"
+             target="_blank" rel="noopener" class="btn btn-primary" style="padding:0.6rem 1.4rem;font-size:0.85rem;">
+            Enroll Now - RS 999
+          </a>
+        </li>
+      </ul>
+      <button class="mobile-menu-btn" id="menuBtn" onclick="toggleMenu()" aria-label="Toggle menu">&#9776;</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="pill-badge reveal">
+        <span class="pill-dot"></span>
+        2-Hour Live Workshop &nbsp;&bull;&nbsp; Only RS 999
+      </div>
+      <h1 class="reveal delay-1">
+        Understand How a USB Can<br>
+        <span class="hl">Take Control of a Computer</span>
+      </h1>
+      <p class="hero-defend reveal delay-1">and how to defend against it</p>
+      <p class="hero-sub reveal delay-2">
+        Learn the USB attack chain and the defences that stop it. Educational &amp; defensive training only. Authorized systems only.
+      </p>
+      <div class="hero-meta reveal delay-3">
+        <div class="hero-meta-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <strong>4 October 2025</strong>
+        </div>
+        <div class="hero-meta-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <strong>10:00 PM to 12:00 AM (PKT)</strong>
+        </div>
+        <div class="hero-meta-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><path d="M2 17h20"/></svg>
+          <strong>Online via Google Meet</strong>
+        </div>
+      </div>
+      <div class="hero-urgency reveal delay-4">
+        <span class="urgency-dot"></span>
+        Only <span class="seats-counter" id="seatCounter">67</span><span class="seats-label">Seats Left</span> - Filling Fast
+      </div>
+      <div class="hero-cta reveal delay-5">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdxtgT2HtzBhfTMUpeWtsB5SnzDbYyNNQXvN2RPvNyyVc57dg/viewform"
+           target="_blank" rel="noopener" class="btn btn-primary btn-lg">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Save My Seat - RS 999
+        </a>
+        <a href="#steps" class="btn btn-outline btn-lg">How to Enroll</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- QUICK ENROLLMENT CARD -->
+  <section class="section quick-enroll-section">
+    <div class="container">
+      <div class="final-cta-card quick-enroll-card reveal">
+        <div class="card-accent"></div>
+        <div class="pill-badge" style="margin-bottom:1.25rem; justify-content:center;">
+          <span class="pill-dot"></span>
+          <span style="color:#00F260;">Reserve Your Spot</span>
+        </div>
+        <h3 class="reveal delay-1" style="margin-bottom:0.75rem;text-align:center;">Ready to Learn?<br><span class="hl">Enroll Now</span></h3>
+        <p class="reveal delay-2" style="margin-bottom:1.5rem;text-align:center;">Limited to 67 seats. Only RS 999. Includes workshop access, resources, and a private WhatsApp community.</p>
+        <div class="reveal delay-3" style="text-align:center;">
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSdxtgT2HtzBhfTMUpeWtsB5SnzDbYyNNQXvN2RPvNyyVc57dg/viewform"
+             target="_blank" rel="noopener" class="btn btn-primary btn-lg" style="width:100%; max-width:100%; justify-content:center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Secure Your Seat Now
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- WORKSHOP OBJECTIVE -->
+  <section class="section" id="learn">
+    <div class="container">
+      <div class="text-center" style="margin-bottom:3rem;">
+        <div class="section-label reveal">Workshop Overview</div>
+        <h2 class="reveal delay-1">Workshop Objective</h2>
+      </div>
+      <div class="reveal delay-2 workshop-objective-box" style="max-width:900px; margin:0 auto; padding:2.5rem; background:rgba(0,242,96,0.03); border:1px solid rgba(0,242,96,0.2); border-radius:24px; position:relative; overflow:hidden;">
+        <div class="card-accent"></div>
+        <p class="workshop-objective-lead" style="font-size:1.05rem; color:#fff; margin-bottom:1.25rem; font-weight:500;">In 2 hours you will understand the USB attack chain — device emulation, privilege concepts, remote access paths — and how defenders detect and block it. Educational &amp; defensive use only.</p>
+        <div class="learn-grid" style="grid-template-columns:1fr;">
+          <div class="learn-item">
+            <div class="learn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div><h4>How a USB Device Can Control a Computer</h4><p>Learn how a USB device can emulate a keyboard and send commands. Understand what programmable USB devices are and why defenders must treat them as a real risk.</p></div>
+          </div>
+          <div class="learn-item">
+            <div class="learn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg></div>
+            <div><h4>Windows Security &amp; Privilege Concepts</h4><p>Learn how Windows protects computers, what administrator privileges mean, how UAC and related controls work, and where automation-based risks appear.</p></div>
+          </div>
+          <div class="learn-item">
+            <div class="learn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <div><h4>Remote Access &amp; Networking</h4><p>Understand Remote Desktop Protocol (RDP), basic networking concepts, NAT, firewalls, and tunneling — and the security implications of each.</p></div>
+          </div>
+          <div class="learn-item">
+            <div class="learn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-2V7a4 4 0 0 0-8 0v3H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-12a2 2 0 0 0-2-2z"/></svg></div>
+            <div><h4>Complete Architecture Understanding</h4><p>See how USB device → Windows → RDP → tunnel → remote client fit together as one attack chain — and where defenders can break that chain.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT YOU WILL GET -->
+  <section class="section" style="background:rgba(0,0,0,0.2);">
+    <div class="container">
+      <div class="text-center" style="margin-bottom:3rem;">
+        <div class="section-label reveal">Learning Outcomes</div>
+        <h2 class="reveal delay-1">What You Will Get in This Workshop</h2>
+      </div>
+      <div class="reveal delay-2" style="max-width:1000px; margin:0 auto;">
+        <div class="workshop-benefits-grid">
+          <div class="workshop-benefit-card">
+            <div class="card-accent"></div>
+            <h3 style="margin-bottom:1.25rem; color:#fff;">Hands-On Technical Understanding</h3>
+            <ul style="list-style:none;">
+              <li style="margin-bottom:0.85rem; display:flex; gap:0.75rem; align-items:flex-start;"><span style="color:#00F260; font-weight:700; flex-shrink:0;">✓</span> <span>Practical introduction to USB automation</span></li>
+              <li style="margin-bottom:0.85rem; display:flex; gap:0.75rem; align-items:flex-start;"><span style="color:#00F260; font-weight:700; flex-shrink:0;">✓</span> <span>How commands are structured and executed</span></li>
+              <li style="margin-bottom:0.85rem; display:flex; gap:0.75rem; align-items:flex-start;"><span style="color:#00F260; font-weight:700; flex-shrink:0;">✓</span> <span>Understand timing, commands, and Windows interaction</span></li>
+              <li style="margin-bottom:0.85rem; display:flex; gap:0.75rem; align-items:flex-start;"><span style="color:#00F260; font-weight:700; flex-shrink:0;">✓</span> <span>How remote access works behind the scenes</span></li>
+              <li style="margin-bottom:0.85rem; display:flex; gap:0.75rem; align-items:flex-start;"><span style="color:#00F260; font-weight:700; flex-shrink:0;">✓</span> <span>Tunneling and network concepts explained</span></li>
+              <li style="display:flex; gap:0.75rem; align-items:flex-start;"><span style="color:#00F260; font-weight:700; flex-shrink:0;">✓</span> <span>Complete end-to-end system understanding</span></li>
+            </ul>
+          </div>
+          <div class="workshop-benefit-card">
+            <div class="card-accent card-accent-delay"></div>
+            <h3 style="margin-bottom:1.25rem; color:#fff;">Practical Workshop Experience</h3>
+            <ul style="list-style:none;">
+              <li style="margin-bottom:0.85rem; display:flex; gap:0.75rem; align-items:flex-start;"><span style="color:#00F260; font-weight:700; flex-shrink:0;">✓</span> <span>Complete demonstration in isolated lab environment</span></li>
+              <li style="margin-bottom:0.85rem; display:flex; gap:0.75rem; align-items:flex-start;"><span style="color:#00F260; font-weight:700; flex-shrink:0;">✓</span> <span>Learn and understand each stage of the process</span></li>
+              <li style="margin-bottom:0.85rem; display:flex; gap:0.75rem; align-items:flex-start;"><span style="color:#00F260; font-weight:700; flex-shrink:0;">✓</span> <span>Troubleshoot common issues in the lab</span></li>
+              <li style="margin-bottom:0.85rem; display:flex; gap:0.75rem; align-items:flex-start;"><span style="color:#00F260; font-weight:700; flex-shrink:0;">✓</span> <span>Identify security controls and defensive techniques</span></li>
+              <li style="margin-bottom:0.85rem; display:flex; gap:0.75rem; align-items:flex-start;"><span style="color:#00F260; font-weight:700; flex-shrink:0;">✓</span> <span>Both hacker and defender perspectives</span></li>
+              <li style="display:flex; gap:0.75rem; align-items:flex-start;"><span style="color:#00F260; font-weight:700; flex-shrink:0;">✓</span> <span>Practical ways to protect your organization</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUR TECHNIQUE -->
+  <section class="section">
+    <div class="container">
+      <div class="text-center" style="margin-bottom:3rem;">
+        <div class="section-label reveal">What Makes This Different</div>
+        <h2 class="reveal delay-1">Understand the Full USB Attack Chain</h2>
+      </div>
+      <div class="reveal delay-2 technique-box" style="max-width:900px; margin:0 auto; padding:2.5rem; background:rgba(0,242,96,0.05); border:2px solid rgba(0,242,96,0.25); border-radius:24px; position:relative; overflow:hidden;">
+        <div class="card-accent card-accent-delay"></div>
+        <p class="technique-lead" style="font-size:1.05rem; color:#fff; margin-bottom:1.25rem; font-weight:500;">Walk through the full attack chain conceptually — emulation, privileges, remote access — in an educational, defensive context on authorized systems only.</p>
+        <div class="learn-grid" style="grid-template-columns:1fr;">
+          <div class="learn-item">
+            <div class="learn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+            <div><h4>USB Device Emulation Concepts</h4><p>Learn how programmable USB devices can emulate keyboards and automate commands — and why that capability is a serious security concern.</p></div>
+          </div>
+          <div class="learn-item">
+            <div class="learn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15.09 8.26H22L17.82 12.46L19.91 18.72L12 14.54L4.09 18.72L6.18 12.46L2 8.26H8.91L12 2Z"/></svg></div>
+            <div><h4>Commands, Timing &amp; Lab Testing</h4><p>Learn how command sequences are structured, how timing matters, and how to study these behaviours safely in an isolated lab environment.</p></div>
+          </div>
+          <div class="learn-item">
+            <div class="learn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 0 1 9-9m-9 9H3"/></svg></div>
+            <div><h4>Both Attacker and Defender Views</h4><p>Understand how the attack chain looks from the offensive side and how to detect, monitor, and protect against it from the defender side.</p></div>
+          </div>
+          <div class="learn-item">
+            <div class="learn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+            <div><h4>Remote Access Paths &amp; Controls</h4><p>Learn how remote access concepts fit into the chain after local compromise — and which controls reduce that risk.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO IS THIS FOR -->
+  <section class="section" style="background:rgba(0,0,0,0.2);">
+    <div class="container">
+      <div class="text-center" style="margin-bottom:3rem;">
+        <div class="section-label reveal">Who Should Join</div>
+        <h2 class="reveal delay-1">Is This Workshop For You?</h2>
+        <p class="reveal delay-2" style="max-width:700px; margin:0 auto;">If you have ever wondered how a USB drive can be used in an attack — and how to defend against it — this workshop is for you. You don't need advanced knowledge. Just curiosity and a commitment to use what you learn ethically and legally.</p>
+      </div>
+      <div class="reveal delay-3" style="max-width:900px; margin:0 auto; display:grid; grid-template-columns:1fr; gap:2rem;">
+        <div style="padding:2rem; background:var(--color-surface); border:1px solid var(--color-border); border-radius:16px;">
+          <h4 style="margin-bottom:1.5rem; color:#fff; font-size:1.2rem;">Perfect For Anyone Who Wants to:</h4>
+          <ul style="list-style:none;">
+            <li style="margin-bottom:1rem; display:flex; gap:1rem;"><span style="color:#00F260; font-weight:700; font-size:1.3rem;">✓</span><span>Understand how USB attacks really work</span></li>
+            <li style="margin-bottom:1rem; display:flex; gap:1rem;"><span style="color:#00F260; font-weight:700; font-size:1.3rem;">✓</span><span>Learn hacking techniques in simple language</span></li>
+            <li style="margin-bottom:1rem; display:flex; gap:1rem;"><span style="color:#00F260; font-weight:700; font-size:1.3rem;">✓</span><span>Protect their own computer from these attacks</span></li>
+            <li style="margin-bottom:1rem; display:flex; gap:1rem;"><span style="color:#00F260; font-weight:700; font-size:1.3rem;">✓</span><span>Build a career in cybersecurity</span></li>
+            <li style="margin-bottom:1rem; display:flex; gap:1rem;"><span style="color:#00F260; font-weight:700; font-size:1.3rem;">✓</span><span>Know how to keep their data safe</span></li>
+            <li style="display:flex; gap:1rem;"><span style="color:#00F260; font-weight:700; font-size:1.3rem;">✓</span><span>Learn attack techniques so you can defend against them</span></li>
+          </ul>
+        </div>
+        <div style="padding:2rem; background:rgba(255,107,107,0.08); border:1px solid rgba(255,107,107,0.2); border-radius:16px;">
+          <h4 style="margin-bottom:1.5rem; color:#fff; font-size:1.2rem;">What You Need:</h4>
+          <ul style="list-style:none;">
+            <li style="margin-bottom:1rem; display:flex; gap:1rem;"><span style="color:#ff6b6b; font-weight:700; font-size:1.3rem;">•</span><span>A computer with Windows (for learning)</span></li>
+            <li style="margin-bottom:1rem; display:flex; gap:1rem;"><span style="color:#ff6b6b; font-weight:700; font-size:1.3rem;">•</span><span>Basic knowledge of how computers work</span></li>
+            <li style="margin-bottom:1rem; display:flex; gap:1rem;"><span style="color:#ff6b6b; font-weight:700; font-size:1.3rem;">•</span><span>2 hours of free time to learn</span></li>
+            <li style="margin-bottom:1rem; display:flex; gap:1rem;"><span style="color:#ff6b6b; font-weight:700; font-size:1.3rem;">•</span><span>Genuine interest to learn how security works</span></li>
+            <li style="display:flex; gap:1rem;"><span style="color:#ff6b6b; font-weight:700; font-size:1.3rem;">•</span><span>Promise to use this knowledge ethically</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ETHICAL NOTICE -->
+  <section class="section">
+    <div class="container">
+      <div class="text-center" style="margin-bottom:3rem;">
+        <div class="section-label reveal">Important</div>
+        <h2 class="reveal delay-1">Ethical &amp; Authorized Training</h2>
+      </div>
+      <div class="reveal delay-2" style="max-width:800px; margin:0 auto; padding:2.5rem; background:rgba(0,242,96,0.03); border:2px solid rgba(0,242,96,0.2); border-radius:24px;">
+        <p style="font-size:1.05rem; color:#fff; margin-bottom:1.5rem;">This workshop is designed for authorized educational and security-testing environments. All practical exercises (if any) must be performed only on systems and networks you own or for which you have explicit written permission to test.</p>
+        <p style="color:var(--color-text-muted); margin-bottom:1.5rem;">The techniques covered must not be used for unauthorized access or against third-party systems. Ready-to-use attack tools or live payloads for third-party systems are not provided. Any misuse of knowledge from this workshop violates Pakistan's Prevention of Electronic Crimes Act, 2016 (as amended) and may be investigated by the NCCIA.</p>
+        <div style="padding:1.5rem; background:rgba(255,80,80,0.08); border-left:4px solid #ff6b6b; border-radius:8px;">
+          <p style="color:#ff6b6b; font-weight:600; margin:0;">⚠️ By enrolling, you agree to use this knowledge only for defensive, educational, research, and authorized security-testing purposes — never for unauthorized access or malicious activities. Misuse is your personal legal responsibility under PECA.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- 3 SIMPLE STEPS -->
+  <section class="section steps-section" id="steps">
+    <div class="container">
+      <div class="text-center">
+        <div class="section-label reveal">Enrollment Process</div>
+        <h2 class="steps-heading reveal delay-1">3 Simple Steps to<br><span class="hl">Save Your Seat</span> in the Workshop</h2>
+        <p class="reveal delay-2" style="max-width:580px;margin:0 auto;">Enrolling takes less than 2 minutes. Follow these three steps and you're in.</p>
+        <div class="steps-grid">
+          <div class="step-card reveal delay-1">
+            <div class="step-number">01</div>
+            <div class="step-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <h3>Go to the Google Form</h3>
+            <p>Click the green "Go to Google Form &amp; Enroll" button below. It opens the official registration form in a new tab.</p>
+          </div>
+          <div class="step-card reveal delay-2">
+            <div class="step-number">02</div>
+            <div class="step-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </div>
+            <h3>Fill the Details &amp; Submit</h3>
+            <p>Enter your name, contact number, and payment confirmation. The form takes under 2 minutes to complete.</p>
+          </div>
+          <div class="step-card reveal delay-3">
+            <div class="step-number">03</div>
+            <div class="step-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <h3>Join WhatsApp Group and Get Link</h3>
+            <p>Within 24 hours of enrollment, you will be added to our WhatsApp group. At 9 PM or 10 PM PKT on workshop day, we will send the Google Meet link in the group. Click the link to join the live workshop.</p>
+          </div>
+        </div>
+        <div class="steps-cta reveal">
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSdxtgT2HtzBhfTMUpeWtsB5SnzDbYyNNQXvN2RPvNyyVc57dg/viewform"
+             target="_blank" rel="noopener" class="btn btn-primary btn-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Go to Google Form &amp; Enroll
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- WHAT YOU'LL LEARN -->
+  <section class="section" id="learn">
+    <div class="container">
+      <div class="text-center">
+        <div class="section-label reveal">Curriculum</div>
+        <h2 class="reveal delay-1">What You'll <span style="color:var(--color-primary)">Learn</span></h2>
+        <p class="reveal delay-2" style="max-width:600px;margin:0 auto;">Everything explained in simple language so anyone can understand. Learn how the attacks work, why they work, and how to stop them. Purely educational and ethical learning.</p>
+      </div>
+      <div class="learn-grid">
+        <div class="learn-item reveal delay-1">
+          <div class="learn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+          <div><h4>Cybersecurity and Ethical Hacking Basics</h4><p>What cybersecurity is, what ethical hacking means, legal and illegal hacking, what you can and cannot do, and why understanding these techniques is important.</p></div>
+        </div>
+        <div class="learn-item reveal delay-2">
+          <div class="learn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <div><h4>How USB Devices Work</h4><p>How your computer recognizes a USB, how a USB can pretend to be a keyboard, what makes a USB dangerous, and why most people don't know about this.</p></div>
+        </div>
+        <div class="learn-item reveal delay-3">
+          <div class="learn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+          <div><h4>BadUSB and Automated Attacks</h4><p>What happens when a USB device is misused for automation, how command injection via HID works in principle, and what the real dangers are for users and organizations.</p></div>
+        </div>
+        <div class="learn-item reveal delay-4">
+          <div class="learn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <div><h4>Complete Attack Chain Understanding</h4><p>From USB to privilege concepts to remote access paths. Understand how each stage connects — and where defenders can interrupt the chain.</p></div>
+        </div>
+        <div class="learn-item reveal delay-1">
+          <div class="learn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <div><h4>Windows Privileges &amp; Security Controls</h4><p>Why admin privileges matter, what security features Windows provides, and how defenders monitor and harden these areas.</p></div>
+        </div>
+        <div class="learn-item reveal delay-2">
+          <div class="learn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+          <div><h4>Remote Desktop Concepts</h4><p>What Remote Desktop is, how remote access works in principle, and the security implications of exposing remote services.</p></div>
+        </div>
+        <div class="learn-item reveal delay-3">
+          <div class="learn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+          <div><h4>Command Sequences &amp; Safe Analysis</h4><p>How to read and understand the kinds of commands a malicious USB might send, and how to study them safely in a lab without harming production systems.</p></div>
+        </div>
+        <div class="learn-item reveal delay-4">
+          <div class="learn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div><h4>How to Protect Yourself</h4><p>How to stop these attacks, what signs to look for, how to protect your computer, and what organizations can do to stay safe.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- AGENDA -->
+  <section class="section agenda-section" id="agenda">
+    <div class="container">
+      <div class="text-center">
+        <div class="section-label reveal">Workshop Agenda</div>
+        <h2 class="reveal delay-1">2-Hour <span style="color:var(--color-primary)">Breakdown</span></h2>
+        <p class="reveal delay-2" style="max-width:560px;margin:0 auto;">Comprehensive 15-module curriculum. Every minute is structured for complete architecture understanding.</p>
+      </div>
+      <div class="agenda-timeline" style="max-width:750px;margin:2.5rem auto 0;">
+        <div class="agenda-item reveal delay-1">
+          <div class="agenda-dot"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div class="agenda-body"><div class="agenda-time">0–10 min</div><h4>Cybersecurity &amp; Ethical Hacking Foundations</h4><p>Cybersecurity basics, penetration testing, authorized vs unauthorized testing, attacker/defender perspectives, responsible use, and legal boundaries.</p></div>
+        </div>
+        <div class="agenda-item reveal delay-1">
+          <div class="agenda-dot"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+          <div class="agenda-body"><div class="agenda-time">10–25 min</div><h4>USB Device Fundamentals</h4><p>How USB devices communicate, device identification, keyboard-style interaction, programmable vs normal USB devices.</p></div>
+        </div>
+        <div class="agenda-item reveal delay-1">
+          <div class="agenda-dot"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+          <div class="agenda-body"><div class="agenda-time">25–40 min</div><h4>Understanding Bad USB &amp; USB Rubber Ducky</h4><p>BadUSB concept, how devices behave differently, USB automation applications, cybersecurity uses, risks, and defensive strategies.</p></div>
+        </div>
+        <div class="agenda-item reveal delay-1">
+          <div class="agenda-dot"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <div class="agenda-body"><div class="agenda-time">40–55 min</div><h4>Our Custom Technique &amp; Architecture Overview</h4><p>Introduction to the custom technique, high-level architecture, how USB, Windows, RDP, and networking connect together conceptually.</p></div>
+        </div>
+        <div class="agenda-item reveal delay-1">
+          <div class="agenda-dot"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <div class="agenda-body"><div class="agenda-time">55–75 min</div><h4>Understanding the Payload &amp; Windows Fundamentals</h4><p>Payload breakdown, Windows accounts, permissions, UAC, services, firewall, local groups, Remote Desktop configuration, environment variables.</p></div>
+        </div>
+        <div class="agenda-item reveal delay-1">
+          <div class="agenda-dot"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="5"/></svg></div>
+          <div class="agenda-body"><div class="agenda-time">75–90 min</div><h4>Remote Desktop Protocol Fundamentals</h4><p>How RDP works, client vs host, RDP service, permissions, firewall considerations, port 3389, and security implications.</p></div>
+        </div>
+        <div class="agenda-item reveal delay-1">
+          <div class="agenda-dot"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+          <div class="agenda-body"><div class="agenda-time">90–100 min</div><h4>Networking Fundamentals</h4><p>IP addresses, private vs public networks, ports, TCP, client/server model, NAT, firewalls, and reachability concepts.</p></div>
+        </div>
+        <div class="agenda-item reveal delay-1">
+          <div class="agenda-dot"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3L5 7m0 0L1 11m4-4l8 8m-8-8l4 4m0 0l4-4"/></svg></div>
+          <div class="agenda-body"><div class="agenda-time">100–110 min</div><h4>Tunneling &amp; Remote Connectivity</h4><p>Network tunnels, reverse tunnels, connecting local services through external intermediaries, architecture fit, and security risks.</p></div>
+        </div>
+        <div class="agenda-item reveal delay-1">
+          <div class="agenda-dot"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+          <div class="agenda-body"><div class="agenda-time">110–117 min</div><h4>Complete Architecture &amp; Payload Analysis</h4><p>Putting everything together. Analyzing payloads, understanding dependencies, identifying stages, and safe modification techniques in labs.</p></div>
+        </div>
+        <div class="agenda-item reveal delay-1">
+          <div class="agenda-dot"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="agenda-body"><div class="agenda-time">117–120 min</div><h4>Defender Perspective &amp; Q&amp;A</h4><p>Detecting USB activity, monitoring account/RDP/service/firewall changes, detecting tunnels, defensive strategies, and open questions.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- PRICING -->
+  <section class="section pricing-section" id="pricing">
+    <div class="container">
+      <div class="section-label reveal">Pricing</div>
+      <h2 class="reveal delay-1">Simple, <span style="color:var(--color-primary)">Affordable</span> Pricing</h2>
+      <p class="reveal delay-2" style="max-width:500px;margin:0 auto;">One flat price. No hidden fees. No upsells. Just pure educational value.</p>
+      <div class="pricing-card reveal delay-3">
+        <div class="pricing-glow"></div>
+        <div class="pill-badge" style="margin-bottom:1.5rem;"><span class="pill-dot"></span>Workshop Pass</div>
+        <div class="price-amount"><span class="price-currency">RS</span>999</div>
+        <p class="price-label">One-time payment &nbsp;&bull;&nbsp; Full 2-hour workshop access</p>
+        <div class="pricing-details">
+          <div class="pricing-detail"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><strong>4 October 2025</strong></div>
+          <div class="pricing-detail"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><strong>10:00 PM to 12:00 AM (PKT)</strong></div>
+          <div class="pricing-detail"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><strong>Online via WhatsApp Group</strong></div>
+          <div class="pricing-detail"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><strong>Certificate of Completion</strong></div>
+          <div class="pricing-detail"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><strong>Workshop Resources &amp; Notes</strong></div>
+        </div>
+        <div class="pricing-urgency"><span class="urgency-dot"></span>Only 67 Seats Remaining</div>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdxtgT2HtzBhfTMUpeWtsB5SnzDbYyNNQXvN2RPvNyyVc57dg/viewform"
+           target="_blank" rel="noopener" class="btn btn-primary btn-lg" style="width:100%;max-width:100%;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Go to Google Form &amp; Enroll
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ETHICS & LEGAL -->
+  <section class="section ethics-section" id="ethics">
+    <div class="container">
+      <div class="text-center">
+        <div class="section-label reveal">Ethics &amp; Legal</div>
+        <h2 class="reveal delay-1">Strictly <span style="color:var(--color-primary)">Educational</span> &amp; Ethical</h2>
+        <p class="reveal delay-2" style="max-width:620px;margin:0 auto;">PakSec Nation operates under a strict ethical code. This workshop is designed to educate &#8212; not enable harm. Every participant must agree to our ethics policy before joining.</p>
+      </div>
+      <div class="ethics-grid">
+        <div class="ethics-card reveal delay-1">
+          <div class="ethics-card-header"><div class="ethics-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h4>Educational Purpose Only</h4></div>
+          <p>All content is strictly conceptual and theoretical. No real attack tools, live payloads, or working exploit code will be shared or demonstrated during this workshop.</p>
+        </div>
+        <div class="ethics-card reveal delay-2">
+          <div class="ethics-card-header"><div class="ethics-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><h4>Consent &amp; Ethics Agreement</h4></div>
+          <p>Every participant must sign a digital consent form acknowledging that the knowledge gained is for defensive, educational, and research purposes only &#8212; never for unauthorized access.</p>
+        </div>
+        <div class="ethics-card reveal delay-3">
+          <div class="ethics-card-header"><div class="ethics-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><h4>Responsible Disclosure Culture</h4></div>
+          <p>We teach the responsible disclosure mindset &#8212; if you discover a vulnerability, you report it ethically to the affected organization, not exploit it for personal gain.</p>
+        </div>
+        <div class="ethics-card reveal delay-4">
+          <div class="ethics-card-header"><div class="ethics-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F260" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><h4>No Unauthorized Use</h4></div>
+          <p>Applying any technique taught in this workshop against systems, networks, or devices you do not own or have explicit written permission to test is strictly prohibited and illegal.</p>
+        </div>
+      </div>
+      <div class="peca-banner reveal">
+        <div class="peca-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <div>
+          <h4>PECA 2016 (as amended) &#8212; Know the Law</h4>
+          <p>Under Pakistan's Prevention of Electronic Crimes Act, 2016 (as amended), unauthorized access to computer systems, networks, or data is a criminal offence punishable by imprisonment and fines. The National Cyber Crime Investigation Agency (NCCIA) investigates these offences. This workshop exists to help you understand threats so you can defend against them &#8212; not to enable illegal activity. Any misuse is solely the responsibility of the individual.</p>
+          <p style="margin-top:0.85rem;font-size:0.88rem;">
+            Official references:
+            <a href="https://sja.gos.pk/assets/Updated_Laws/The%20Prevention%20of%20Electronic%20Crimes%20Act,%20Rules%20Final%20Index%20(%20Upto%20date%202025).pdf" target="_blank" rel="noopener" style="color:#ff6b6b;text-decoration:underline;">PECA Act &amp; Rules (PDF)</a>
+            &nbsp;·&nbsp;
+            <a href="https://www.nccia.gov.pk/laws.php" target="_blank" rel="noopener" style="color:#ff6b6b;text-decoration:underline;">NCCIA Laws</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- FINAL CTA -->
+  <section class="section final-cta" id="cta">
+    <div class="container">
+      <div class="final-cta-card reveal">
+        <div class="pill-badge" style="margin-bottom:1.5rem;">
+          <span class="urgency-dot"></span>
+          <span style="color:#ff6b6b;">Only 67 Seats Left</span>
+        </div>
+        <h2 class="reveal delay-1">Secure Your Seat Now<br><span class="hl">Pakistan's Most Affordable</span><br>USB Attack Concepts Workshop</h2>
+        <div class="final-cta-meta reveal delay-2">
+          <div class="final-cta-meta-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><strong>4 October 2025</strong></div>
+          <div class="final-cta-meta-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><strong>10:00 PM to 12:00 AM</strong></div>
+          <div class="final-cta-meta-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg><strong>RS 999 Only</strong></div>
+        </div>
+        <p class="reveal delay-2" style="font-size:0.88rem;color:var(--color-text-muted);margin:0.5rem 0 1.25rem;">By enrolling you agree to use this knowledge only for educational, defensive, research, and authorized testing purposes.</p>
+        <div class="reveal delay-3">
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSdxtgT2HtzBhfTMUpeWtsB5SnzDbYyNNQXvN2RPvNyyVc57dg/viewform"
+             target="_blank" rel="noopener" class="btn btn-primary btn-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Go to Google Form &amp; Enroll Now
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-brand-name">
+            <img src="assets/paksec-logo.png" alt="PakSec Nation" class="nav-logo" style="width:34px;height:34px;">
+            PakSec <span>Nation</span>
+          </div>
+          <p>Pakistan's cybersecurity education movement. Building defenders, not attackers.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Workshop</h4>
+          <ul>
+            <li><a href="#steps">How to Enroll</a></li>
+            <li><a href="#learn">What You'll Learn</a></li>
+            <li><a href="#agenda">Agenda</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal &amp; Links</h4>
+          <ul>
+            <li><a href="#ethics">Ethics Policy</a></li>
+            <li><a href="https://sja.gos.pk/assets/Updated_Laws/The%20Prevention%20of%20Electronic%20Crimes%20Act,%20Rules%20Final%20Index%20(%20Upto%20date%202025).pdf" target="_blank" rel="noopener">PECA Act (PDF)</a></li>
+            <li><a href="https://www.nccia.gov.pk/laws.php" target="_blank" rel="noopener">NCCIA Laws</a></li>
+            <li><a href="https://paksec-nation.netlify.app" target="_blank" rel="noopener">Main Website</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 PakSec Nation. All rights reserved.</p>
+        <div class="legal">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Educational &amp; Defensive Training Only &nbsp;|&nbsp; Unauthorized Access is Illegal Under PECA 2016 (as amended) &nbsp;|&nbsp; Investigated by NCCIA
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMenu(){
+      var links=document.getElementById('navLinks');
+      var btn=document.getElementById('menuBtn');
+      var open=links.classList.toggle('active');
+      btn.innerHTML=open?'&#10005;':'&#9776;';
+      document.body.style.overflow=open?'hidden':'';
+    }
+    function closeMenu(){
+      var links=document.getElementById('navLinks');
+      var btn=document.getElementById('menuBtn');
+      links.classList.remove('active');
+      btn.innerHTML='&#9776;';
+      document.body.style.overflow='';
+    }
+    document.addEventListener('click',function(e){
+      var links=document.getElementById('navLinks');
+      var btn=document.getElementById('menuBtn');
+      if(links.classList.contains('active')&&!links.contains(e.target)&&!btn.contains(e.target)){closeMenu();}
+    });
+    window.addEventListener('scroll',function(){
+      var nav=document.getElementById('navbar');
+      if(window.scrollY>60){nav.style.background='rgba(11,15,25,0.97)';nav.style.boxShadow='0 4px 30px rgba(0,0,0,0.4)';}
+      else{nav.style.background='rgba(11,15,25,0.85)';nav.style.boxShadow='none';}
+    });
+    var revealEls=document.querySelectorAll('.reveal,.reveal-left,.reveal-right');
+    var isMobile=window.matchMedia('(max-width:768px)').matches;
+    var observerOptions={
+      threshold:isMobile?0.15:0.12,
+      rootMargin:isMobile?'0px 0px -30px 0px':'0px 0px -40px 0px'
+    };
+    var observer=new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('active');
+          observer.unobserve(entry.target);
+        }
+      });
+    },observerOptions);
+    revealEls.forEach(function(el){observer.observe(el);});
+    
+    // Add stagger animation to grid items
+    document.querySelectorAll('.learn-grid .learn-item, .steps-grid .step-card, .agenda-item').forEach(function(el,index){
+      el.style.animationDelay=(index*Math.min(0.1,0.05))+'s';
+    });
+    
+    // Optimize for mobile performance
+    if(isMobile){
+      document.documentElement.style.scrollBehavior='auto';
+    }
+    
+    // Reduce animation on low-end devices
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      document.documentElement.style.setProperty('--transition','0.1s ease');
+      document.documentElement.style.setProperty('--transition-slow','0.2s ease');
+    }
+    
+    // Enhance lazy loading for images
+    if('IntersectionObserver' in window){
+      var lazyImages=document.querySelectorAll('img[data-src]');
+      lazyImages.forEach(function(img){
+        observer.observe(img);
+      });
+    }
+    document.querySelectorAll('a[href^="#"]').forEach(function(anchor){
+      anchor.addEventListener('click',function(e){
+        var target=document.querySelector(this.getAttribute('href'));
+        if(target){e.preventDefault();var offset=80;var top=target.getBoundingClientRect().top+window.pageYOffset-offset;window.scrollTo({top:top,behavior:'smooth'});}
+      });
+    });
+    
+    // Animated Seat Counter (67 → 50)
+    var seatCounter = document.getElementById('seatCounter');
+    var currentSeat = 67;
+    setInterval(function(){
+      if(currentSeat > 50) {
+        currentSeat--;
+        seatCounter.textContent = currentSeat;
+        seatCounter.style.animation = 'none';
+        setTimeout(function() {
+          seatCounter.style.animation = 'countDown 5s ease-in-out infinite';
+        }, 10);
+      } else {
+        currentSeat = 67;
+      }
+    }, 5000);
+  </script>
+</body>
+</html>
